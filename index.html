@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Care for Kiwi, a virtual parrot. Share a cracker, play ball, fly, or take a perch nap.">
+    <title>Kiwi the parrot</title>
+    <link rel="icon" href="images/feather.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+    <!-- Deferred scripts run in order after the page has been parsed. -->
+    <script src="vendor/jquery-3.7.1.min.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="page-header" role="banner">
+      <div>
+        <h1>Kiwi the parrot</h1>
+        <p>A virtual parrot to care for and play with.</p>
+      </div>
+      <img class="header-feather" src="images/feather.svg" width="42" height="42" alt="">
+    </header>
+
+    <main class="game" role="main">
+      <section class="aviary" aria-labelledby="aviary-title">
+        <h2 class="visually-hidden" id="aviary-title">Parrot enclosure</h2>
+        <!-- Each SVG group can move independently while the perch stays in place. -->
+        <div class="pet-image-container" data-mood="curious">
+          <svg class="pet-image" viewBox="0 0 640 440" role="img" aria-labelledby="parrot-title">
+            <title id="parrot-title">Kiwi, a curious green parrot on a tree branch</title>
+            <defs>
+              <linearGradient id="plumage" x2=".7" y2="1" gradientUnits="objectBoundingBox">
+                <stop stop-color="#aabe50"/>
+                <stop offset="1" stop-color="#668b39"/>
+              </linearGradient>
+            </defs>
+            <!-- The supplied jungle photograph fills the enclosure behind Kiwi. -->
+            <image class="jungle-background" href="images/jungle.png" width="640" height="440" preserveAspectRatio="xMidYMid slice"/>
+            <rect width="640" height="440" fill="#092113" opacity=".18"/>
+
+            <g class="bird-motion">
+              <!-- Tail, flight wings, torso, and head are separate so they can be posed. -->
+              <path d="M346 267q40 35 76 106q7 17-4 20q-13 4-29-18l-67-92z" fill="#537b39"/>
+              <path d="M358 277q35 21 76 86q10 15 1 21q-12 8-28-11l-64-81z" fill="#7f9d43"/>
+              <g class="flight-wings">
+                <path class="flight-wing-back" d="M297 223 Q247 209 173 173 Q151 161 153 145 Q159 135 181 146 Q159 122 175 119 Q193 117 224 142 Q201 119 213 112 Q241 100 299 173Z" fill="#527b3e" stroke="#426737" stroke-width="3" stroke-linejoin="round"/>
+              </g>
+              <g class="bird-belly">
+                <path d="M248 175 Q289 155 329 177 Q362 198 376 241 Q396 297 353 313 Q302 327 270 292 Q240 262 248 175Z" fill="url(#plumage)" stroke="#577b37" stroke-width="3"/>
+                <path d="M248 195 Q260 204 272 211 Q275 263 313 300 Q273 300 257 263 Q245 238 248 195Z" fill="#c0c75d" opacity=".85"/>
+                <g class="folded-wing">
+                  <path d="M323 181 Q358 196 384 246 Q403 285 384 289 Q371 291 362 281 Q357 294 339 284 Q312 270 296 245 Q279 211 304 192Z" fill="#749b48" stroke="#557c38" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M321 220 Q334 228 342 241 M343 227 Q355 235 365 249 M342 248 Q355 255 363 265" fill="none" stroke="#a7b95b" stroke-width="4" stroke-linecap="round"/>
+                </g>
+              </g>
+              <g class="flight-wings">
+                <g class="flight-wing-front">
+                  <path d="M312 217 Q351 177 413 133 Q456 103 470 113 Q479 120 449 146 Q486 128 493 141 Q498 153 463 172 Q493 165 493 181 Q489 198 425 215 Q389 240 332 260 Q313 265 301 250 Q291 237 312 217Z" fill="#82a74d" stroke="#507a3b" stroke-width="3" stroke-linejoin="round"/>
+                  <path d="M336 232 Q373 215 416 184 M365 224 Q405 212 437 198 M358 202 Q388 178 425 157" fill="none" stroke="#b3c76c" stroke-width="5" stroke-linecap="round"/>
+                </g>
+              </g>
+
+              <g class="bird-head">
+                <path d="M235 192 Q214 170 232 132 Q250 97 292 102 Q325 104 340 128 L321 131 Q345 140 339 150 L325 154 Q339 183 314 204 Q294 223 262 217Z" fill="#adbb50" stroke="#6f903b" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M281 111 Q305 93 327 101 Q337 104 331 111 Q325 117 309 120 Q331 118 342 127 Q348 134 339 137 Q324 143 297 134" fill="#adbb50" stroke="#6f903b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M240 149 Q263 126 284 141 Q306 158 290 188 Q277 210 249 199 Q230 191 231 172Z" fill="#f9d888"/>
+                <path class="lower-beak" d="M219 167 Q237 160 243 167 Q249 182 233 190 Q221 195 214 181Z" fill="#d9803c" stroke="#a8532c" stroke-width="2"/>
+                <path d="M239 152 Q229 138 215 147 Q199 157 202 173 Q203 182 210 185 Q212 171 222 171 Q240 169 239 152Z" fill="#f2a14c" stroke="#a8532c" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M209 160q6-10 14-9" fill="none" stroke="#ffcb79" stroke-width="3" stroke-linecap="round"/>
+
+                <!-- Expressions change with the happiness level; the middle mood is curious. -->
+                <g class="face face-curious">
+                  <ellipse cx="263" cy="159" rx="8" ry="10" fill="#29342a"/>
+                  <circle cx="261" cy="156" r="2.5" fill="#fff9e5"/>
+                  <path d="M253 142q10-6 18 0" fill="none" stroke="#6d7934" stroke-width="3" stroke-linecap="round"/>
+                </g>
+                <g class="face face-happy">
+                  <path d="M253 162q9-15 19 0" fill="none" stroke="#29342a" stroke-width="5" stroke-linecap="round"/>
+                  <ellipse cx="277" cy="178" rx="10" ry="5" fill="#dc8867" opacity=".8"/>
+                </g>
+                <g class="face face-sad">
+                  <path d="M253 158q9 7 19 5 M253 147q9 2 17-5" fill="none" stroke="#384638" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M271 175q11 13 4 16q-8 1-4-16Z" fill="#6ea6cb"/>
+                </g>
+                <g class="face face-rest">
+                  <path d="M253 157q9 9 19 0" fill="none" stroke="#29342a" stroke-width="4" stroke-linecap="round"/>
+                </g>
+              </g>
+
+              <!-- The feet lift with the bird when it takes off from the branch. -->
+              <path class="flight-foot" d="M284 303l-4 19 7 6m47-24-2 19 7 5" fill="none" stroke="#da8d47" stroke-width="6" stroke-linecap="round"/>
+            </g>
+
+            <!-- A forked tree branch stays anchored below the bird's feet. -->
+            <g class="tree-branch" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M-20 358 C137 372 221 337 286 335 S418 342 494 314 S605 284 664 289" stroke="#442b1b" stroke-width="40"/>
+              <path d="M-20 353 C137 367 221 332 286 330 S418 337 494 309 S605 279 664 284" stroke="#815332" stroke-width="27"/>
+              <path d="M461 325 Q505 293 520 261 L549 247" stroke="#442b1b" stroke-width="18"/>
+              <path d="M461 321 Q505 289 520 257 L549 243" stroke="#815332" stroke-width="10"/>
+              <path d="M21 350 Q139 363 224 336 M255 327 Q313 322 355 330 M378 329 Q426 332 461 316 M510 305 Q564 280 621 283 M486 307 L513 274" stroke="#a47545" stroke-width="3"/>
+              <path d="M49 369 Q126 375 180 358 M363 346 Q399 351 433 341 M544 300 L576 293" stroke="#53341f" stroke-width="3"/>
+            </g>
+            <g class="perch-feet" fill="none" stroke="#c6763b" stroke-width="5" stroke-linecap="round">
+              <path d="M284 306q-11 8-4 21m11-19q-6 9 1 18"/>
+              <path class="raised-foot" d="M337 306q-9 7-4 20m11-19q-6 8 1 19"/>
+            </g>
+
+            <!-- Action props stay hidden until the matching animation begins. -->
+            <g class="ball-motion">
+              <path class="play-foot" d="M342 301q4-8 16-13m-5 4 7 0m-6-1 3-7" fill="none" stroke="#c6763b" stroke-width="5" stroke-linecap="round"/>
+              <g class="toy-ball">
+                <circle cx="376" cy="280" r="20" fill="#f3c450" stroke="#776142" stroke-width="2"/>
+                <path d="M357 275q5-15 20-15q11 2 17 11l-12 7z" fill="#cc5544"/>
+                <path d="M382 278l12-7q6 13-4 24l-10-8z" fill="#4e999f"/>
+                <path d="M359 286l21 1 10 8q-20 15-31-9z" fill="#7da94f"/>
+                <path d="M365 272q7-7 13-5" fill="none" stroke="#fff5c1" stroke-width="2" stroke-linecap="round"/>
+              </g>
+            </g>
+            <g class="cracker-motion">
+              <rect x="142" y="149" width="32" height="25" rx="4" fill="#edb768" stroke="#af713f" stroke-width="2"/>
+              <path d="M149 155h.1m9 1h.1m9 0h.1m-17 10h.1m9 0h.1m8 0h.1" fill="none" stroke="#9a643b" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <g class="nap-symbol" fill="none" stroke="#4e7564" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M365 121h13l-13 14h13m8-32h10l-10 11h10m10-27h8l-8 8h8"/>
+            </g>
+          </svg>
+        </div>
+        <div class="speech">
+          <span class="speech-speaker" aria-hidden="true">Kiwi says</span>
+          <!-- Action comments update here without interrupting the player. -->
+          <p id="pet-message" role="status" aria-atomic="true">Hi! Want to share a cracker or play ball?</p>
+        </div>
+      </section>
+
+      <section class="dashboard" aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title">Care for <span class="name">Kiwi</span></h2>
+
+        <div class="stats">
+          <div class="stat-row">
+            <label for="happiness-meter">Happiness</label>
+            <strong class="happiness"><span id="happiness-value">68</span><span class="stat-unit"> / 100</span></strong>
+          </div>
+          <meter id="happiness-meter" min="0" max="100" value="68">68 out of 100</meter>
+          <div class="stat-row mood-row">
+            <span>Mood</span>
+            <strong id="pet-mood">Curious</strong>
+          </div>
+          <div class="stat-row weight-row">
+            <span>Weight</span>
+            <strong><span class="weight">120</span> <span class="stat-unit">g</span></strong>
+          </div>
+        </div>
+
+        <!-- All four native buttons work with a mouse, touch, or a keyboard. -->
+        <div class="button-container" role="group" aria-label="Care actions">
+          <button type="button" class="treat-button" data-action="treat" disabled>
+            <span class="action-icon" aria-hidden="true"><img src="images/crackers.svg" width="28" height="28" alt=""></span>
+            <span><strong>Treat</strong><small>Share a cracker</small></span>
+          </button>
+          <button type="button" class="play-button" data-action="play" disabled>
+            <span class="action-icon" aria-hidden="true"><img src="images/ball.svg" width="28" height="28" alt=""></span>
+            <span><strong>Play</strong><small>Pass the ball</small></span>
+          </button>
+          <button type="button" class="exercise-button" data-action="exercise" disabled>
+            <span class="action-icon" aria-hidden="true"><img src="images/wings.svg" width="28" height="28" alt=""></span>
+            <span><strong>Exercise</strong><small>Take a flight</small></span>
+          </button>
+          <button type="button" class="rest-button" data-action="rest" disabled>
+            <span class="action-icon" aria-hidden="true"><img src="images/rest.svg" width="28" height="28" alt=""></span>
+            <span><strong>Rest</strong><small>Nap on the perch</small></span>
+          </button>
+        </div>
+        <p class="care-note">Kiwi&rsquo;s happiness slowly drains between interactions.</p>
+        <noscript><p>Turn on JavaScript to play with Kiwi.</p></noscript>
+      </section>
+    </main>
+  </body>
+</html>
