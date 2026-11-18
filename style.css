@@ -1,0 +1,539 @@
+/* Keep the game in one centered layout, with a full-width stage on narrow screens. */
+/* Define reusable colors once. For example, var(--ink) uses the text color defined here. */
+:root {
+  color-scheme: light;
+  --page: #969696;
+  --page-text: #101610;
+  --page-text-muted: #202a21;
+  --ink: #24382a;
+  --muted: #3d4b3c;
+  --line: #939b90;
+  --sage: #536b47;
+  --green: #456a3c;
+}
+
+/* Include padding and borders in a box's declared width and height. */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Center the page, cap it at 1080px, and leave about 20px of space on each side on smaller screens. */
+body {
+  width: min(100% - 40px, 1080px);
+  margin: 0 auto;
+  background: var(--page);
+  color: var(--ink);
+  font-family: "DM Sans", system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+/* Flexbox puts the title and parrot icon at opposite ends. The transparent border preserves spacing below them. */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 32px 0 22px;
+  border-bottom: 1px solid transparent;
+}
+
+/* Remove browser default margins so the layout rules control spacing. */
+h1, h2, p {
+  margin: 0;
+}
+
+/* Share the heading font and line height. Let unusually long words wrap if space runs out. */
+h1, h2 {
+  font-family: "DM Serif Text", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+/* Scale the main title with viewport width, keeping the size between 2.5rem and 4rem. */
+h1 {
+  color: var(--page-text);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  letter-spacing: -0.045em;
+}
+
+/* Separate the subtitle from the title and use a softer text color. */
+.page-header p {
+  margin-top: 8px;
+  color: var(--page-text-muted);
+}
+
+/* Keep the header icon at the size set on the image element in index.html. */
+.header-feather {
+  flex: none;
+}
+
+/* Use two grid columns. The picture gets 1.55 shares of the available width and the controls get one. */
+.game {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 30px;
+  padding: 28px 0 36px;
+}
+
+/* Frame both the drawing and the dialogue. Clip their edges to the panel's rounded corners. */
+.aviary {
+  overflow: hidden;
+  border: 1px solid #a9b99c;
+  border-radius: 20px;
+  background: #dac18b;
+}
+
+/* Give the SVG scene wrapper a background. JavaScript also sets this wrapper's mood and action attributes. */
+.pet-image-container {
+  background: var(--sage);
+}
+
+/* Make the drawing fill the column and keep the proportions of its SVG viewBox. */
+.pet-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Stack the speaker label and message. The minimum height reduces layout jumps as messages change. */
+.speech {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-height: 98px;
+  padding: 16px 21px;
+  border-top: 1px solid #b8c8ac;
+}
+
+/* Style the small "Kiwi says" label above the message. */
+.speech-speaker {
+  color: var(--green);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Allow the controls column to shrink inside the grid and give it space above the heading. */
+.dashboard {
+  min-width: 0;
+  padding: 20px 0 0;
+}
+
+/* Set the control panel heading size and the gap before the stats. */
+.dashboard h2 {
+  margin-bottom: 22px;
+  color: var(--page-text);
+  font-size: 2rem;
+}
+
+/* Pair the meter with a text value and mood so color is only a visual cue. */
+/* Add a divider and breathing room between the stats and the action controls. */
+.stats {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Align each label and value at opposite ends while keeping their text baselines lined up. */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  color: var(--page-text-muted);
+}
+
+/* Emphasize stat labels and values with darker, bold text. */
+.stat-row strong,
+.stat-row label {
+  color: var(--page-text);
+  font-weight: 700;
+}
+
+/* Show the units in smaller, bold black text. */
+.stat-unit {
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* Leave space between the happiness bar and the mood row. */
+.mood-row {
+  margin-top: 11px;
+}
+
+/* Leave a smaller gap between the mood and weight rows. */
+.weight-row {
+  margin-top: 7px;
+}
+
+/* Size the native meter and set its default fill color. */
+meter {
+  display: block;
+  width: 100%;
+  height: 14px;
+  margin-top: 8px;
+  --meter-fill: #79984b;
+}
+
+/* When JavaScript sets the meter's data-mood to sad, use a warmer fill color. */
+meter[data-mood="sad"] {
+  --meter-fill: #bd8353;
+}
+
+/* Style the meter track in browsers that expose the WebKit meter parts, including Chrome. */
+meter::-webkit-meter-bar {
+  border: 0;
+  border-radius: 8px;
+  background: #e4e8d9;
+}
+
+/* Style the filled portion of the meter and ask the browser to ease width updates over a quarter second. */
+meter::-webkit-meter-optimum-value {
+  border-radius: 8px;
+  background: var(--meter-fill);
+  transition: width .25s linear;
+}
+
+/* Apply the same rounded fill and mood color to Firefox's meter. */
+meter::-moz-meter-bar {
+  border-radius: 8px;
+  background: var(--meter-fill);
+}
+
+/* Arrange the four actions in a two-column grid. */
+.button-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Place the icon and label side by side and keep the button large enough to click or tap comfortably. */
+button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 65px;
+  padding: 10px;
+  border: 1px solid #becbb6;
+  border-radius: 12px;
+  background: #f1f3e9;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Place the action name and the short instruction on separate lines. */
+button strong, button small {
+  display: block;
+}
+
+/* Style the instruction below each action name. */
+button small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+
+/* Highlight a button on hover when it can be used. */
+button:hover:not([aria-disabled="true"]):not(:disabled) {
+  border-color: #78966a;
+  background: #edf2e4;
+}
+
+/* Show a visible outline when the browser indicates keyboard focus should be drawn. */
+button:focus-visible {
+  outline: 3px solid #326349;
+  outline-offset: 3px;
+}
+
+/* Show a wait cursor during setup or an action. JavaScript handles blocking clicks during an action. */
+button:disabled, button[aria-disabled="true"] {
+  cursor: wait;
+}
+
+/* Make a fixed square for each action icon and center its contents. */
+.action-icon {
+  display: grid;
+  flex: 0 0 28px;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #e9eedf;
+  color: #345e3d;
+  font-size: 1.15rem;
+}
+
+/* Let the image fill its icon box. */
+.action-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Give the cracker icon a warm background. */
+.treat-button .action-icon {
+  background: #f5e9d0;
+  color: #7b4829;
+}
+
+/* Give the ball icon a pink background. */
+.play-button .action-icon {
+  background: #f3e0d9;
+  color: #81453a;
+}
+
+/* Give the nap icon a yellow background. */
+.rest-button .action-icon {
+  background: #fff0b3;
+  color: #a96b0b;
+}
+
+/* Style the short reminder about happiness draining over time. */
+.care-note {
+  margin-top: 15px;
+  color: var(--page-text-muted);
+  font-size: 0.85rem;
+}
+
+/* Hide the enclosure heading visually while keeping it available to assistive technology. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Weight scales the torso and folded wing around the body's center. */
+/* Give the grouped bird shapes a shadow. Exercise moves this entire group together. */
+.bird-motion {
+  filter: drop-shadow(0 2px 3px rgb(6 25 11 / 45%));
+}
+
+/* JavaScript sets --belly-scale based on Kiwi's weight. scaleX changes only the width, and transform-origin sets the anchor.
+ * The transition smooths the change over 0.4 seconds. The fallback of 1 keeps the original width before setup.
+ */
+.bird-belly {
+  transform: scaleX(var(--belly-scale, 1));
+  transform-origin: 307px 243px;
+  transition: transform .4s ease;
+}
+
+/* Set the head's pivot near the neck. The transition smooths the change between poses. */
+.bird-head {
+  transform-origin: 294px 197px;
+  transition: transform .3s ease;
+}
+
+/* Hide all expression and action drawings by default. Later rules reveal the relevant layers. */
+.face, .flight-wings, .flight-foot, .ball-motion, .cracker-motion, .nap-symbol {
+  visibility: hidden;
+}
+
+/* Read the scene's data-mood attribute and reveal the matching face. For example, "curious" shows .face-curious. */
+[data-mood="curious"] .face-curious,
+[data-mood="happy"] .face-happy,
+[data-mood="sad"] .face-sad {
+  visibility: visible;
+}
+
+/* Tilt Kiwi's head slightly in the Happy mood. */
+[data-mood="happy"] .bird-head {
+  transform: rotate(6deg);
+}
+
+/* Lower and tilt Kiwi's head in the Sad mood. */
+[data-mood="sad"] .bird-head {
+  transform: translateY(5px) rotate(-10deg);
+}
+
+/* Treat: slide the cracker to the beak, then chew as the cracker disappears. */
+/* JavaScript starts the action by setting data-action="treat" on the scene. This selector then shows the cracker and starts offer-cracker.
+ * var(--action-duration) gets its length from script.js. ease-in-out smooths the motion, and both applies the endpoint poses outside the active playback.
+ */
+[data-action="treat"] .cracker-motion {
+  visibility: visible;
+  animation: offer-cracker var(--action-duration) ease-in-out both;
+}
+
+/* Pivot the lower beak around its hinge. Each chew takes 0.21 seconds. It starts after 0.64 seconds and runs five times, alternating direction. */
+[data-action="treat"] .lower-beak {
+  transform-origin: 234px 169px;
+  animation: chew .21s .64s ease-in-out 5 alternate;
+}
+
+/* Keyframe percentages mark points in the animation's timeline. The browser fills in the motion between them.
+ * The cracker fades in, reaches the beak by 44%, holds through 56%, then fades away by 73%.
+ */
+@keyframes offer-cracker {
+  0% { transform: translateX(-15px); opacity: 0; }
+  16% { opacity: 1; }
+  44%, 56% { transform: translateX(57px); opacity: 1; }
+  73%, 100% { transform: translateX(59px) scale(.98); opacity: 0; }
+}
+
+/* Rotate the lower beak between the starting pose and a 15-degree turn. The alternate setting reverses every other pass. */
+@keyframes chew {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-15deg); }
+}
+
+/* Play: the raised foot and ball move together, while the panels on the ball spin. */
+/* Hide the perched foot on the ball side while the lifted version is visible. */
+[data-action="play"] .raised-foot {
+  visibility: hidden;
+}
+
+/* Reveal the lifted foot and ball as one group. The 0.54-second motion reverses at each end to bob back and forth. */
+[data-action="play"] .ball-motion {
+  visibility: visible;
+  animation: lift-ball .54s ease-in-out infinite alternate;
+}
+
+/* Spin only the nested ball around its center. It completes one turn every 1.2 seconds at a steady speed. */
+[data-action="play"] .toy-ball {
+  transform-origin: 376px 280px;
+  animation: spin-ball 1.2s linear infinite;
+}
+
+/* Move from slightly left and down to slightly right and up. The foot and ball travel together. */
+@keyframes lift-ball {
+  from { transform: translate(-1px, 4px); }
+  to { transform: translate(3px, -5px); }
+}
+
+/* Rotate the ball one full turn. The browser uses its original rotation as the starting point. */
+@keyframes spin-ball {
+  to { transform: rotate(1turn); }
+}
+
+/* Exercise: change to extended wings and move the entire bird around the perch. */
+/* :is() matches either listed class. Show the open wings and airborne feet for the flight pose. */
+[data-action="exercise"] :is(.flight-wings, .flight-foot) {
+  visibility: visible;
+}
+
+/* Hide the folded wing and the feet drawn on the branch during the flight. */
+[data-action="exercise"] :is(.folded-wing, .perch-feet) {
+  visibility: hidden;
+}
+
+/* Start the flight loop on the parent group so the body, head, wings, and airborne feet travel together.
+ * The branch is outside the group and stays still. JavaScript supplies the full flight duration.
+ */
+[data-action="exercise"] .bird-motion {
+  transform-origin: 298px 224px;
+  animation: fly-loop var(--action-duration) ease-in-out both;
+}
+
+/* Animate each wing separately while its parent is moving. Each wing pivots near the shoulder and reverses after 0.28 seconds. */
+[data-action="exercise"] :is(.flight-wing-back, .flight-wing-front) {
+  transform-origin: 304px 224px;
+  animation: flap .28s ease-in-out infinite alternate;
+}
+
+/* Start the back wing at the opposite end of the flap motion so the wings move out of phase. */
+[data-action="exercise"] .flight-wing-back {
+  animation-direction: alternate-reverse;
+}
+
+/* At 0% Kiwi is on the branch. At 28% Kiwi is up and left, at 58% up and right, and at 80% headed down.
+ * The final frame returns to the original position. Negative Y moves up in the SVG coordinate system.
+ */
+@keyframes fly-loop {
+  0%, 100% { transform: translate(0, 0); }
+  28% { transform: translate(-78px, -60px) rotate(-12deg); }
+  58% { transform: translate(92px, -67px) rotate(8deg); }
+  80% { transform: translate(45px, -24px) rotate(5deg); }
+}
+
+/* Compress the wing vertically and tilt it one way, then return it to full height and tilt it the other way. */
+@keyframes flap {
+  from { transform: scaleY(.58) rotate(-7deg); }
+  to { transform: scaleY(1) rotate(7deg); }
+}
+
+/* Rest: show a closed eye and float sleep marks above the perch. */
+/* During Rest, hide every face drawing except the one reserved for sleep. */
+[data-action="rest"] .face:not(.face-rest) {
+  visibility: hidden;
+}
+
+/* Show the closed-eye expression and the floating sleep marks. */
+[data-action="rest"] :is(.face-rest, .nap-symbol) {
+  visibility: visible;
+}
+
+/* Use a lowered head tilt for the sleeping pose. */
+[data-action="rest"] .bird-head {
+  transform: translateY(5px) rotate(-7deg);
+}
+
+/* Run the sleep-mark animation back and forth in one-second passes. Like the other repeating animations,
+ * it stops when JavaScript removes data-action from the scene.
+ */
+[data-action="rest"] .nap-symbol {
+  animation: snooze 1s ease-out infinite alternate;
+}
+
+/* Move the sleep marks upward as they become more visible. The reverse pass lowers and fades them. */
+@keyframes snooze {
+  from { transform: translateY(5px); opacity: .35; }
+  to { transform: translateY(-10px); opacity: 1; }
+}
+
+/* Stack the aviary above the controls when the viewport is too narrow for two columns. */
+@media (max-width: 815px) {
+  /* Switch the game to one column and reduce the gap between sections. */
+  .game { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  /* Remove the extra top space now that the dashboard is below the picture. */
+  .dashboard { padding-top: 0; }
+}
+
+/* Tighten spacing and text sizes on phone-sized screens. */
+@media (max-width: 540px) {
+  /* Reduce the vertical space around the header. */
+  .page-header { padding: 20px 0 14px; }
+  /* Reduce the subtitle size a little so it fits more comfortably. */
+  .page-header p { font-size: 0.9rem; }
+  /* Tighten the space before the aviary and between the game sections. */
+  .game { gap: 16px; padding-top: 16px; }
+  /* Make the dialogue panel shorter and reduce its inner padding. */
+  .speech { min-height: 74px; padding: 11px 14px; }
+  /* Use a smaller heading and a smaller gap before the stats. */
+  .dashboard h2 { margin-bottom: 14px; font-size: 1.7rem; }
+  /* Bring the stats divider closer to the rows. */
+  .stats { padding-bottom: 12px; }
+  /* Reduce the gap before the buttons. */
+  .button-container { margin-top: 14px; }
+  /* Bring the reminder closer to the buttons. */
+  .care-note { margin-top: 10px; }
+}
+
+/* Make more room for the game and its buttons on especially narrow screens. */
+@media (max-width: 360px) {
+  /* Use 14px of space on each side of the page. */
+  body { width: calc(100% - 28px); }
+  /* Reduce button spacing and allow long words to wrap if needed. */
+  button { gap: 7px; padding: 8px; overflow-wrap: anywhere; }
+  /* Shrink each button icon to a 24px square. */
+  .action-icon { flex-basis: 24px; width: 24px; height: 24px; }
+}
+
+/* Keep the action props, facial changes, and dialogue when motion is reduced. */
+/* Respect the player's reduced-motion setting with static poses in place of moving effects. */
+@media (prefers-reduced-motion: reduce) {
+  /* Stop animations and transitions inside the SVG. The visibility rules still show the matching action props. */
+  .pet-image * { animation: none !important; transition: none !important; }
+  /* Place the cracker closer to Kiwi for the static Treat pose. */
+  [data-action="treat"] .cracker-motion { transform: translateX(45px); }
+  /* Lift the bird into a stationary flight pose. */
+  [data-action="exercise"] .bird-motion { transform: translateY(-42px); }
+}
