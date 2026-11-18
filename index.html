@@ -1,57 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+  
   <head>
+  
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Care for Kiwi, a virtual parrot. Share a cracker, play ball, fly, or take a perch nap.">
+    <meta name="description" content="Care for Kiwi, a virtual parrot. Share a cracker, play ball, fly, or take a nap.">
+
     <title>Kiwi the parrot</title>
-    <link rel="icon" href="images/feather.svg" type="image/svg+xml">
+    <link rel="icon" href="images/favicon-parrot.svg" type="image/svg+xml">
+    
     <link rel="stylesheet" href="style.css">
     <!-- Deferred scripts run in order after the page has been parsed. -->
+    <!-- Load the local jQuery library first because script.js uses jQuery. Both scripts use defer so the HTML is ready when they run. -->
     <script src="vendor/jquery-3.7.1.min.js" defer></script>
     <script src="script.js" defer></script>
   </head>
   <body>
+    <!-- Show the game title and subtitle with a decorative parrot at the other end of the header. -->
     <header class="page-header" role="banner">
       <div>
         <h1>Kiwi the parrot</h1>
-        <p>A virtual parrot to care for and play with.</p>
+        <p>A virtual parrot play with.</p>
       </div>
-      <img class="header-feather" src="images/feather.svg" width="42" height="42" alt="">
+      
+      <img class="header-feather" src="images/header-parrot.png" width="42" height="42" alt="">
     </header>
 
+    <!-- The game grid contains the illustrated enclosure and the dashboard. CSS places them side by side or stacks them on a narrow screen. -->
     <main class="game" role="main">
+      <!-- This panel combines the parrot scene with Kiwi's dialogue below it. -->
       <section class="aviary" aria-labelledby="aviary-title">
+       
         <h2 class="visually-hidden" id="aviary-title">Parrot enclosure</h2>
         <!-- Each SVG group can move independently while the perch stays in place. -->
+        <!--
+          The wrapper starts with data-mood="curious". JavaScript updates that attribute and adds data-action only during an interaction.
+          Selectors in style.css use those attributes to choose which drawings to show and animate.
+        -->
         <div class="pet-image-container" data-mood="curious">
+          <!--
+            Draws the scene in a 640 by 440 coordinate system, with X increasing rightward and Y increasing downward.
+            Groups let CSS move several shapes at once. Individual paths stay attached to their group as it moves.
+          -->
           <svg class="pet-image" viewBox="0 0 640 440" role="img" aria-labelledby="parrot-title">
+            <!-- JavaScript updates it to describe Kiwi's mood or current action. -->
             <title id="parrot-title">Kiwi, a curious green parrot on a tree branch</title>
+            <!-- Define the two-color plumage gradient here. The torso uses fill="url(#plumage)" to reference it. -->
             <defs>
               <linearGradient id="plumage" x2=".7" y2="1" gradientUnits="objectBoundingBox">
                 <stop stop-color="#aabe50"/>
                 <stop offset="1" stop-color="#668b39"/>
               </linearGradient>
             </defs>
-            <!-- The supplied jungle photograph fills the enclosure behind Kiwi. -->
+            <!-- The jungle  fills the enclosure behind Kiwi. -->
             <image class="jungle-background" href="images/jungle.png" width="640" height="440" preserveAspectRatio="xMidYMid slice"/>
+            <!-- This semi-transparent rectangle darkens the photograph behind Kiwi. Shapes drawn later appear in front of it. -->
             <rect width="640" height="440" fill="#092113" opacity=".18"/>
 
+            <!-- Everything inside this group takes off together during Exercise. The branch is drawn outside it and stays still. -->
             <g class="bird-motion">
               <!-- Tail, flight wings, torso, and head are separate so they can be posed. -->
+              <!-- These two paths draw the tail. The d attribute contains drawing commands and coordinates. -->
               <path d="M346 267q40 35 76 106q7 17-4 20q-13 4-29-18l-67-92z" fill="#537b39"/>
               <path d="M358 277q35 21 76 86q10 15 1 21q-12 8-28-11l-64-81z" fill="#7f9d43"/>
+              <!-- Draw the extended back wing before the torso so it sits behind the body. CSS reveals it only in flight. -->
               <g class="flight-wings">
                 <path class="flight-wing-back" d="M297 223 Q247 209 173 173 Q151 161 153 145 Q159 135 181 146 Q159 122 175 119 Q193 117 224 142 Q201 119 213 112 Q241 100 299 173Z" fill="#527b3e" stroke="#426737" stroke-width="3" stroke-linejoin="round"/>
               </g>
+              <!-- Group the torso and folded wing so CSS can change their width together when Kiwi's weight changes. -->
               <g class="bird-belly">
                 <path d="M248 175 Q289 155 329 177 Q362 198 376 241 Q396 297 353 313 Q302 327 270 292 Q240 262 248 175Z" fill="url(#plumage)" stroke="#577b37" stroke-width="3"/>
                 <path d="M248 195 Q260 204 272 211 Q275 263 313 300 Q273 300 257 263 Q245 238 248 195Z" fill="#c0c75d" opacity=".85"/>
+                <!-- Draw the folded wing for the perched pose. Exercise hides it and shows the extended wings. -->
                 <g class="folded-wing">
                   <path d="M323 181 Q358 196 384 246 Q403 285 384 289 Q371 291 362 281 Q357 294 339 284 Q312 270 296 245 Q279 211 304 192Z" fill="#749b48" stroke="#557c38" stroke-width="3" stroke-linejoin="round"/>
                   <path d="M321 220 Q334 228 342 241 M343 227 Q355 235 365 249 M342 248 Q355 255 363 265" fill="none" stroke="#a7b95b" stroke-width="4" stroke-linecap="round"/>
                 </g>
               </g>
+              <!-- Draw the extended front wing after the torso so it appears in front. CSS flaps the front and back wings separately. -->
               <g class="flight-wings">
                 <g class="flight-wing-front">
                   <path d="M312 217 Q351 177 413 133 Q456 103 470 113 Q479 120 449 146 Q486 128 493 141 Q498 153 463 172 Q493 165 493 181 Q489 198 425 215 Q389 240 332 260 Q313 265 301 250 Q291 237 312 217Z" fill="#82a74d" stroke="#507a3b" stroke-width="3" stroke-linejoin="round"/>
@@ -59,6 +86,7 @@
                 </g>
               </g>
 
+              <!-- Group the head, beak, and faces so they tilt together. The lower-beak path can also rotate by itself to chew. -->
               <g class="bird-head">
                 <path d="M235 192 Q214 170 232 132 Q250 97 292 102 Q325 104 340 128 L321 131 Q345 140 339 150 L325 154 Q339 183 314 204 Q294 223 262 217Z" fill="#adbb50" stroke="#6f903b" stroke-width="3" stroke-linejoin="round"/>
                 <path d="M281 111 Q305 93 327 101 Q337 104 331 111 Q325 117 309 120 Q331 118 342 127 Q348 134 339 137 Q324 143 297 134" fill="#adbb50" stroke="#6f903b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -68,19 +96,23 @@
                 <path d="M209 160q6-10 14-9" fill="none" stroke="#ffcb79" stroke-width="3" stroke-linecap="round"/>
 
                 <!-- Expressions change with the happiness level; the middle mood is curious. -->
+                <!-- The Curious face has an open eye and a raised brow. CSS displays it when the scene has the curious mood. -->
                 <g class="face face-curious">
                   <ellipse cx="263" cy="159" rx="8" ry="10" fill="#29342a"/>
                   <circle cx="261" cy="156" r="2.5" fill="#fff9e5"/>
                   <path d="M253 142q10-6 18 0" fill="none" stroke="#6d7934" stroke-width="3" stroke-linecap="round"/>
                 </g>
+                <!-- The Happy face uses a smiling eye shape and a rosy cheek. -->
                 <g class="face face-happy">
                   <path d="M253 162q9-15 19 0" fill="none" stroke="#29342a" stroke-width="5" stroke-linecap="round"/>
                   <ellipse cx="277" cy="178" rx="10" ry="5" fill="#dc8867" opacity=".8"/>
                 </g>
+                <!-- The Sad face adds a drooping eye and a blue tear. -->
                 <g class="face face-sad">
                   <path d="M253 158q9 7 19 5 M253 147q9 2 17-5" fill="none" stroke="#384638" stroke-width="4" stroke-linecap="round"/>
                   <path d="M271 175q11 13 4 16q-8 1-4-16Z" fill="#6ea6cb"/>
                 </g>
+                <!-- The closed-eye face appears during Rest, whichever mood Kiwi had before the nap. -->
                 <g class="face face-rest">
                   <path d="M253 157q9 9 19 0" fill="none" stroke="#29342a" stroke-width="4" stroke-linecap="round"/>
                 </g>
@@ -99,14 +131,17 @@
               <path d="M21 350 Q139 363 224 336 M255 327 Q313 322 355 330 M378 329 Q426 332 461 316 M510 305 Q564 280 621 283 M486 307 L513 274" stroke="#a47545" stroke-width="3"/>
               <path d="M49 369 Q126 375 180 358 M363 346 Q399 351 433 341 M544 300 L576 293" stroke="#53341f" stroke-width="3"/>
             </g>
+            <!-- Draw the perched feet over the branch. During Play, CSS replaces one foot with the lifted foot below. During Exercise, it hides both. -->
             <g class="perch-feet" fill="none" stroke="#c6763b" stroke-width="5" stroke-linecap="round">
               <path d="M284 306q-11 8-4 21m11-19q-6 9 1 18"/>
               <path class="raised-foot" d="M337 306q-9 7-4 20m11-19q-6 8 1 19"/>
             </g>
 
             <!-- Action props stay hidden until the matching animation begins. -->
+            <!-- This group contains the lifted foot and ball so they bob together when Play starts. -->
             <g class="ball-motion">
               <path class="play-foot" d="M342 301q4-8 16-13m-5 4 7 0m-6-1 3-7" fill="none" stroke="#c6763b" stroke-width="5" stroke-linecap="round"/>
+              <!-- Keep the colored ball parts inside their own group so they can spin without rotating the foot. -->
               <g class="toy-ball">
                 <circle cx="376" cy="280" r="20" fill="#f3c450" stroke="#776142" stroke-width="2"/>
                 <path d="M357 275q5-15 20-15q11 2 17 11l-12 7z" fill="#cc5544"/>
@@ -115,61 +150,87 @@
                 <path d="M365 272q7-7 13-5" fill="none" stroke="#fff5c1" stroke-width="2" stroke-linecap="round"/>
               </g>
             </g>
+            <!-- Draw the cracker and its dots. The Treat animation moves the entire group toward Kiwi's beak. -->
             <g class="cracker-motion">
               <rect x="142" y="149" width="32" height="25" rx="4" fill="#edb768" stroke="#af713f" stroke-width="2"/>
               <path d="M149 155h.1m9 1h.1m9 0h.1m-17 10h.1m9 0h.1m8 0h.1" fill="none" stroke="#9a643b" stroke-width="3" stroke-linecap="round"/>
             </g>
+            <!-- Draw the sleep marks as one path. The Rest animation moves and fades them together. -->
             <g class="nap-symbol" fill="none" stroke="#4e7564" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <path d="M365 121h13l-13 14h13m8-32h10l-10 11h10m10-27h8l-8 8h8"/>
             </g>
           </svg>
         </div>
+        <!-- Kiwi's message sits below the drawing. The status role lets assistive technology announce changes without moving focus. -->
         <div class="speech">
           <span class="speech-speaker" aria-hidden="true">Kiwi says</span>
           <!-- Action comments update here without interrupting the player. -->
-          <p id="pet-message" role="status" aria-atomic="true">Hi! Want to share a cracker or play ball?</p>
+          <p id="pet-message" role="status" aria-atomic="true">Hi! Want to play?</p>
         </div>
       </section>
 
+      <!-- The dashboard shows the current values and provides the four care actions. -->
       <section class="dashboard" aria-labelledby="dashboard-title">
+        <!-- This heading names the dashboard. JavaScript fills the name span from the pet data. -->
         <h2 id="dashboard-title">Care for <span class="name">Kiwi</span></h2>
 
+        <!-- Show the initial happiness, mood, and weight. JavaScript updates these values while the game runs. -->
         <div class="stats">
+          <!-- Pair the happiness label with a readable number. The label's for attribute points to the meter below. -->
           <div class="stat-row">
             <label for="happiness-meter">Happiness</label>
             <strong class="happiness"><span id="happiness-value">68</span><span class="stat-unit"> / 100</span></strong>
           </div>
+          <!-- The meter draws a bar for a value from 0 to 100. The text inside gives a fallback reading. -->
           <meter id="happiness-meter" min="0" max="100" value="68">68 out of 100</meter>
+          <!-- JavaScript updates this text when the score changes mood or Kiwi starts or ends a nap. -->
           <div class="stat-row mood-row">
             <span>Mood</span>
             <strong id="pet-mood">Curious</strong>
           </div>
+          <!-- The weight span is updated in grams each time an action changes Kiwi's weight. -->
           <div class="stat-row weight-row">
             <span>Weight</span>
             <strong><span class="weight">120</span> <span class="stat-unit">g</span></strong>
           </div>
         </div>
 
-        <!-- All four native buttons work with a mouse, touch, or a keyboard. -->
+
+
+
+
+
+        <!--
+          Each button starts disabled until JavaScript is ready. The data-action value is the key that script.js uses for this action.
+          The icon is decorative because the adjacent text already names the action.
+        -->
         <div class="button-container" role="group" aria-label="Care actions">
+          <!-- Treat selects the cracker action and its weight, happiness, and duration values from script.js. -->
           <button type="button" class="treat-button" data-action="treat" disabled>
             <span class="action-icon" aria-hidden="true"><img src="images/crackers.svg" width="28" height="28" alt=""></span>
             <span><strong>Treat</strong><small>Share a cracker</small></span>
           </button>
+          <!-- Play selects the ball action, which moves the lifted foot and spins the ball. -->
           <button type="button" class="play-button" data-action="play" disabled>
             <span class="action-icon" aria-hidden="true"><img src="images/ball.svg" width="28" height="28" alt=""></span>
             <span><strong>Play</strong><small>Pass the ball</small></span>
           </button>
+          <!-- Exercise selects the flight action, which moves Kiwi and flaps both wings. -->
           <button type="button" class="exercise-button" data-action="exercise" disabled>
             <span class="action-icon" aria-hidden="true"><img src="images/wings.svg" width="28" height="28" alt=""></span>
             <span><strong>Exercise</strong><small>Take a flight</small></span>
           </button>
+          <!-- Rest selects the sleeping pose and floating sleep marks. -->
           <button type="button" class="rest-button" data-action="rest" disabled>
             <span class="action-icon" aria-hidden="true"><img src="images/rest.svg" width="28" height="28" alt=""></span>
-            <span><strong>Rest</strong><small>Nap on the perch</small></span>
+            <span><strong>Rest</strong><small>Nap on the branch</small></span>
           </button>
+
+
         </div>
+        <!-- Remind the player that happiness drains during idle time. -->
         <p class="care-note">Kiwi&rsquo;s happiness slowly drains between interactions.</p>
+        <!-- Show this message only when JavaScript is unavailable. The interactive controls require it. -->
         <noscript><p>Turn on JavaScript to play with Kiwi.</p></noscript>
       </section>
     </main>
